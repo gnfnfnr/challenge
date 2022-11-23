@@ -1,55 +1,45 @@
-import React, { useRef, useState } from "react";
-import styled from "styled-components";
-
-const MapBox = styled.div`
-  width: 400px;
-  height: 250px;
-  overflow: hidden;
-  position: relative;
-`;
-const MapImg = styled.img`
-  position: absolute;
-  left: ${(props) => props.imgL}px;
-  top: ${(props) => props.imgT}px;
-  cursor: pointer;
-`;
+import axios from "axios";
+import { useState } from "react";
 
 function App() {
-  const [imgL, setImgL] = useState(0);
-  const [imgT, setImgT] = useState(0);
-  const [curL, setCurL] = useState(0);
-  const [curT, setCurT] = useState(0);
-  const [mouseMove, setMouseMove] = useState(false);
-  //드래그 시작
-  const DragEvent = (event) => {
-    // 현재 위치에서 마우스 위치로 이동
-    setImgL(curL - event.nativeEvent.clientX);
-    setImgT(curT - event.nativeEvent.clientY);
+  const [nextUrl, setNextUrl] = useState("");
+  const onClick = () => {
+    axios
+      .post(
+        "https://kapi.kakao.com/v1/payment/ready",
+        {
+          cid: "TC0ONETIME",
+          partner_order_id: "partner_order_id",
+          partner_user_id: "partner_user_id",
+          item_name: "초코파이",
+          quantity: 1,
+          total_amount: 2200,
+          vat_amount: 200,
+          tax_free_amount: 0,
+          approval_url: "http://localhost:3000/",
+          fail_url: "http://localhost:3000/",
+          cancel_url: "http://localhost:3000/",
+        },
+        {
+          headers: {
+            Authorization: "KakaoAK b3365e5967f9f0368704e9181e0fe9d8",
+            "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data.next_redirect_pc_url);
+        setNextUrl(res.data.next_redirect_pc_url);
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
   };
-  // 이미지 움직이기
-  const MoveDrag = (event) => {
-    event.preventDefault();
-    setCurL(parseInt(event.nativeEvent.clientX + imgL));
-    setCurT(parseInt(event.nativeEvent.clientY + imgT));
-    return false;
-  };
-
   return (
-    <MapBox>
-      <MapImg
-        imgL={curL}
-        imgT={curT}
-        src={require("./map.png")}
-        onMouseDown={(event) => {
-          setMouseMove(true);
-          DragEvent(event);
-        }}
-        onMouseMove={(event) => (mouseMove ? MoveDrag(event) : "")}
-        onMouseUp={(event) => {
-          setMouseMove(false);
-        }}
-      />
-    </MapBox>
+    <div>
+      카카오 페이
+      <button onClick={onClick}>결제하기</button>
+      <a href={nextUrl}>결제하러 이동하기</a>
+    </div>
   );
 }
 
