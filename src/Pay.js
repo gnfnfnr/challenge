@@ -20,7 +20,7 @@ function Pay() {
           quantity: 1,
           total_amount: 2200,
           vat_amount: 200,
-          tax_free_amount: 0,
+          tax_free_amount: 500,
           approval_url: "http://localhost:3000/",
           fail_url: "http://localhost:3000/",
           cancel_url: "http://localhost:3000/",
@@ -35,6 +35,7 @@ function Pay() {
       .then((res) => {
         setNextUrl(res.data.next_redirect_pc_url);
         localStorage.setItem("tid", res.data.tid);
+        localStorage.setItem("pay", JSON.stringify(res.data));
         setTid(res.data.tid);
       })
       .catch((err) => console.log(err));
