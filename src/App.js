@@ -1,13 +1,11 @@
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Pay from "./Pay";
-import Result from "./Result";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./Home";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Pay />} />
-        <Route path="/pay" element={<Result />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );
